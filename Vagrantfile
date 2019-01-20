@@ -1,9 +1,7 @@
-# link to the gitlab-vagrant environment.
-config_gitlab_fqdn  = 'gitlab.example.com'
-config_gitlab_ip    = '10.10.9.99'
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "windows-2016-amd64"
+  config.vm.box = "mwrock/Windows2016"
+  config.vm.boot_timeout = 900
 
   config.vm.provider "libvirt" do |lv, config|
     lv.memory = 4*1024
@@ -40,25 +38,6 @@ Vagrant.configure(2) do |config|
       end
     vb.customize ["modifyvm", :id, "--audio", audio_driver, "--audiocontroller", "hda"]
   end
-
-  config.trigger.before :up do |trigger|
-    trigger.run = {
-      inline: '''bash -euc \'
-certs=(
-  ../gitlab-vagrant/tmp/gitlab.example.com-crt.der
-)
-for cert_path in "${certs[@]}"; do
-  if [ -f $cert_path ]; then
-    mkdir -p tmp
-    cp $cert_path tmp
-  fi
-done
-\'
-'''
-    }
-  end
-
-  config.vm.provision "shell", inline: "echo '#{config_gitlab_ip} #{config_gitlab_fqdn}' | Out-File -Encoding ASCII -Append c:/Windows/System32/drivers/etc/hosts"
   config.vm.provision "shell", path: "ps.ps1", args: "provision-choco.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "provision.ps1"
   config.vm.provision :reload
