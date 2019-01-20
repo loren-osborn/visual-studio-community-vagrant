@@ -126,6 +126,10 @@ choco install -y meld
 choco install -y visualstudiocode
 choco install -y jq
 choco install -y fiddler
+choco install -y tortoisegit
+choco install -y notepadplusplus
+choco install -y wireshark
+choco install -y cygwin
 
 # import the gitlab-vagrant environment site https certificate into the local machine trust store.
 if (Test-Path C:/vagrant/tmp/gitlab.example.com-crt.der) {
